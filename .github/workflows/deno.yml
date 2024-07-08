@@ -2,9 +2,12 @@
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting the default branch, except those matching branches starting with מגרסאות
   push:
-    branches: ['master']
+    branches:
+      - 'master'
+    paths-ignore:
+      - '**/מגרסאות*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,33 +26,39 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v3
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
+
       - name: Install dependencies
-        working-directory: /
         run: npm install
+
       - name: Build
-        working-directory: /
         run: npm run build
-      - name: Setup Pages
+
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload dist repository
           path: './gh-pages/dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
