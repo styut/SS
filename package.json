@@ -1,5 +1,6 @@
 {
   "name": "gh-pages",
+  "homepage":"https://styut.github.io/SS",
   "private": true,
   "version": "0.0.0",
   "type": "module",
