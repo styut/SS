@@ -16,13 +16,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 14
 
       - name: Install Dependencies
         run: npm install --no-save --no-audit --prefer-offline --no-progress --production
 
       - name: Build
         run: npm run build
+
+      - name: Check Vite Build
+        run: |
+          if [ -f "dist/vite" ]; then
+            echo "Vite build found in dist directory."
+          else
+            echo "Vite build not found in dist directory."
+            exit 1
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
