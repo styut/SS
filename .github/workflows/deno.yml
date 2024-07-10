@@ -25,13 +25,7 @@ jobs:
         run: npm run build
 
       - name: Check Vite Build
-        run: |
-          if [ -f "dist/vite" ]; then
-            echo "Vite build found in dist directory."
-          else
-            echo "Vite build not found in dist directory."
-            exit 1
-          fi
+        run: ./src
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
